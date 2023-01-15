@@ -1,4 +1,3 @@
-// @ts-nocheck
 // В Next.js lib папка не имеет назначенного имени, такого как pages папка,
 // поэтому вы можете назвать ее как угодно. Обычно принято использовать lib или utils.
 
@@ -32,7 +31,7 @@ export function getSortedPostsData() {
     // Combine the data with the id
     return {
       id,
-      ...matterResult.data,
+      ...(matterResult.data as { date: string; title: string }),
     };
   });
   // Sort posts by date
@@ -72,7 +71,7 @@ export function getAllPostIds() {
 
 // Нам нужно получить необходимые данные для рендеринга поста с заданным id.
 // ф-я вернет данные поста на основе id:
-export async function getPostData(id) {
+export async function getPostData(id: string) {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
 
@@ -89,6 +88,6 @@ export async function getPostData(id) {
   return {
     id,
     contentHtml,
-    ...matterResult.data,
+    ...(matterResult.data as { date: string; title: string }),
   };
 }

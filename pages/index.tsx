@@ -1,19 +1,27 @@
-// @ts-nocheck
 import Head from "next/head";
 import Layout, { siteTitle } from "../components/layout";
-import styles from "../styles/utils.module.css";
+import utilStyles from "../styles/utils.module.css";
 import { getSortedPostsData } from "../lib/posts";
 import Link from "next/link";
 import Date from "../components/date";
+import { GetStaticProps } from "next";
 
-export default function Home({ allPostsData }) {
+export default function Home({
+  allPostsData,
+}: {
+  allPostsData: {
+    date: string;
+    title: string;
+    id: string;
+  }[];
+}) {
   console.log("allPostsData", allPostsData);
   return (
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={styles.headingMd}>
+      <section className={utilStyles.headingMd}>
         <p>[Your Self Introduction]</p>
         <p>
           (This is a sample website - you’ll be building a site like this on{" "}
@@ -22,14 +30,14 @@ export default function Home({ allPostsData }) {
       </section>
 
       {/* Add this <section> tag below the existing <section> tag */}
-      <section className={`${styles.headingMd} ${styles.padding1px}`}>
-        <h2 className={styles.headingLg}>Blog</h2>
-        <ul className={styles.list}>
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Blog</h2>
+        <ul className={utilStyles.list}>
           {allPostsData.map(({ id, date, title }) => (
-            <li className={styles.listItem} key={id}>
+            <li className={utilStyles.listItem} key={id}>
               <Link href={`/posts/${id}`}>{title}</Link>
               <br />
-              <small className={styles.lightText}>
+              <small className={utilStyles.lightText}>
                 <Date dateString={date} />
               </small>
             </li>
@@ -48,11 +56,11 @@ export default function Home({ allPostsData }) {
 // этого ограничения заключается в том, что React должен иметь все необходимые данные до того, как страница будет отображена.
 // https://nextjs.org/learn/basics/data-fetching/getstaticprops-details
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = () => {
   const allPostsData = getSortedPostsData();
   return {
     props: {
       allPostsData,
     },
   };
-}
+};

@@ -1,19 +1,27 @@
-// @ts-nocheck
 import Layout from "../../components/layout";
 import { getAllPostIds, getPostData } from "../../lib/posts";
 import Head from "next/head";
 import Date from "../../components/date";
-import styles from "../../styles/utils.module.css";
+import utilStyles from "../../styles/utils.module.css";
+import { GetStaticPaths, GetStaticProps } from "next";
 
-export default function Post({ postData }) {
+export default function Post({
+  postData,
+}: {
+  postData: {
+    title: string;
+    date: string;
+    contentHtml: string;
+  };
+}) {
   return (
     <Layout>
       <Head>
         <title>{postData.title}</title>
       </Head>
       <article>
-        <h1 className={styles.headingXl}>{postData.title}</h1>
-        <div className={styles.lightText}>
+        <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+        <div className={utilStyles.lightText}>
           <Date dateString={postData.date} />
         </div>
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
@@ -29,16 +37,7 @@ export default function Post({ postData }) {
 // Используйте getStaticPaths для получения массива идентификаторов продуктов/постов и
 // используйте getStaticProps для получения данных для каждого продукта/поста.
 
-export async function getStaticProps({ params }) {
-  const postData = await getPostData(params.id);
-  return {
-    props: {
-      postData,
-    },
-  };
-}
-
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const paths = getAllPostIds();
   return {
     // paths содержит массив известных путей, возвращаемых getAllPostIds(), включая параметры, определенные pages/posts/[id].js
@@ -46,4 +45,13 @@ export async function getStaticPaths() {
     // https://nextjs.org/learn/basics/dynamic-routes/dynamic-routes-details
     fallback: false,
   };
-}
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const postData = await getPostData(params.id as string);
+  return {
+    props: {
+      postData,
+    },
+  };
+};
