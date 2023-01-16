@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Head from "next/head";
 import Layout, { siteTitle } from "../components/layout";
 import utilStyles from "../styles/utils.module.css";
@@ -6,6 +5,7 @@ import { getSortedPostsData } from "../lib/posts";
 import Link from "next/link";
 import Date from "../components/date";
 import { GetStaticProps } from "next";
+import Image from "next/image";
 
 import { useSession, signIn, signOut } from "next-auth/react";
 
@@ -28,9 +28,28 @@ export default function Home({
         <Head>
           <title>{siteTitle}</title>
         </Head>
+
         <section>
           Signed in as {session.user.name} <br />
           <button onClick={() => signOut()}>Sign out</button>
+        </section>
+
+        <section className={utilStyles.topSection}>
+          <Link href="/">
+            <img
+              // priority
+              src={session.user.image}
+              className={utilStyles.borderCircle}
+              height={108}
+              width={108}
+              alt=""
+            />
+          </Link>
+          <h2 className={utilStyles.headingLg}>
+            <Link href="/" className={utilStyles.colorInherit}>
+              {session.user.name}
+            </Link>
+          </h2>
         </section>
 
         <section className={utilStyles.headingMd}>
